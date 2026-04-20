@@ -4,7 +4,7 @@ import sys
 
 # Pygame 및 사운드 믹서 초기화
 pygame.init()
-pygame.mixer.init() # 사운드를 사용하기 위해 반드시 필요합니다!
+pygame.mixer.init()
 
 def get_korean_font(size):
     candidates = ["malgungothic", "applegothic", "nanumgothic", "notosanscjk"]
@@ -40,17 +40,15 @@ LEVELS = [
 
 # --- 오디오 로드 ---
 try:
-    # 배경음악 로드 및 재생
     pygame.mixer.music.load("bgm.mp3")
-    pygame.mixer.music.set_volume(0.4) # BGM 볼륨 조절 (0.0 ~ 1.0)
-    pygame.mixer.music.play(-1) # -1을 넣으면 게임이 끝날 때까지 무한 반복됩니다.
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1)
 except Exception as e:
     print(f"배경음악(bgm.mp3)을 찾을 수 없습니다: {e}")
 
 try:
-    # 총소리 효과음 로드
     shoot_sound = pygame.mixer.Sound("shoot.mp3")
-    shoot_sound.set_volume(0.6) # 효과음 볼륨 조절
+    shoot_sound.set_volume(0.6)
 except Exception as e:
     print(f"효과음(shoot.mp3)을 찾을 수 없습니다: {e}")
     shoot_sound = None
@@ -173,6 +171,7 @@ def main():
 
         keys = pygame.key.get_pressed()
         
+        # ★ 1. 방향키: 이동과 동시에 시선(facing)도 그쪽으로 바꿉니다.
         if keys[pygame.K_LEFT]  and player.left  > 0:      
             player.x -= 6; facing = (-1, 0)
         if keys[pygame.K_RIGHT] and player.right < WIDTH:   
@@ -182,6 +181,16 @@ def main():
         if keys[pygame.K_DOWN]  and player.bottom < HEIGHT: 
             player.y += 6; facing = (0, 1)
 
+        # ★ 2. WASD: 누르면 방향키가 설정한 시선을 덮어씌웁니다. (이동은 안 함)
+        if keys[pygame.K_a]: 
+            facing = (-1, 0)
+        if keys[pygame.K_d]: 
+            facing = (1, 0)
+        if keys[pygame.K_w]: 
+            facing = (0, -1)
+        if keys[pygame.K_s]: 
+            facing = (0, 1)
+
         shoot_cd -= 1
         
         if reload_timer > 0:
@@ -189,6 +198,7 @@ def main():
             if reload_timer <= 0:
                 current_ammo = max_ammo
                 
+        # ★ 주의: 여기 나누기 기호(//) 뒤에 2가 빠지지 않도록 꼼꼼히 확인했습니다!
         if keys[pygame.K_SPACE] and shoot_cd <= 0 and current_ammo > 0 and reload_timer <= 0:
             bx = player.centerx - BULLET_SIZE // 2
             by = player.centery - BULLET_SIZE // 2
@@ -196,7 +206,6 @@ def main():
             
             bullets.append({"rect": b_rect, "dx": facing[0] * 12, "dy": facing[1] * 12})
             
-            # ★ 총알을 쏠 때 효과음 재생! ★
             if shoot_sound:
                 shoot_sound.play()
                 

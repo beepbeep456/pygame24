@@ -1,0 +1,22 @@
+1. 오늘 한것
+PyInstaller 설치 및 빌드
+resource_path() 함수 추가
+--add-data 옵션으로 에셋 포함
+-exe 실행 확인
+폴더 탐색기 빌드 확인
+2. 빌드 명령어
+dir: 폴더 안 목록을 확인하기 위해서
+rmdir /s /q build
+rmdir /s /q dist
+del pygame24.spec
+먼저 빌드한 파일들과 충돌을 막기 위해 삭제
+pyinstaller --onefile --noconsole ^
+--add-data "13.png;." ^
+--add-data "bgm.mp3;." ^
+--add-data "shoot.mp3;." ^
+pygame24.py
+빌드 파일 생성 및 이미지 추가 
+3.AI 활용 내용
+빌드하기 위해서 막히는 부분과 ppt에서 이해되지 않는 내용을 물어보고 내가 모르는 git 명령어를 알기 위하여 질문하였다. 
+4. resource_path() 를 써야 하는 이유
+빌드를 하면 두 파일의 위치가 달라져 실제 파일과 임시 폴더가 다르다 이것들을 일치시켜 빌드 파일에서도 이미지,사운드등을 사용하기 위해서 resource_path() 함수를 사용하여야 한다.
